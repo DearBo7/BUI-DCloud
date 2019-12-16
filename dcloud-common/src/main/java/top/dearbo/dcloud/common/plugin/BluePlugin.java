@@ -30,6 +30,10 @@ import top.dearbo.dcloud.common.JSUtils;
  */
 public class BluePlugin extends StandardFeature {
 
+    public BluePlugin() {
+
+    }
+
     private final static String TAG = "BluePlugin";
 
     private final static int REQUEST_CODE_OPEN = 777;
