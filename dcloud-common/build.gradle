@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    compileOnly(name: 'lib.5plus.base-release', ext: 'aar')
+    //工具类->https://github.com/Blankj/AndroidUtilCode/tree/master/utilcode
+    api 'com.blankj:utilcode:1.26.0'
+    //https://github.com/googlesamples/easypermissions 申请权限,[AndroidX:3.0.0]
+    api 'pub.devrel:easypermissions:3.0.0'
+    api 'com.github.DearBo7.BUI:bui-core:2.0.0'
+}
+apply from: '../JitPackUpload.gradle'
