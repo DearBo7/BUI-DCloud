@@ -20,7 +20,7 @@ public class JSUtils extends JSUtil {
     }
 
     public static String wrapJsVar(AjaxResult ajaxResult) {
-        return JSUtil.wrapJsVar(ajaxResult == null ? "" : ajaxResult.toString());
+        return wrapJsVar(ajaxResult == null ? "" : ajaxResult.toString(), false);
     }
 
     public static String wrapJsVar(Collection value) {
