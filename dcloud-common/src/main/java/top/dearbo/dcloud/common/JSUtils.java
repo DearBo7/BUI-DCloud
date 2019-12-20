@@ -20,29 +20,41 @@ public class JSUtils extends JSUtil {
     }
 
     public static String wrapJsVar(AjaxResult ajaxResult) {
-        return wrapJsVar(ajaxResult == null ? "{}" : ajaxResult.toString(), false);
+        return wrapJsVarString(ajaxResult == null ? "{}" : ajaxResult.toString());
     }
 
     public static String wrapJsVar(Collection value) {
-        return wrapJsVar(JsonUtil.toJson(value), false);
+        return wrapJsVarString(JsonUtil.toJson(value));
     }
 
     public static String wrapJsVar(int value) {
-        return wrapJsVar(String.valueOf(value), false);
+        return wrapJsVarString(String.valueOf(value));
+    }
+
+    public static String wrapJsVarString(String value) {
+        return wrapJsVar(value, false);
     }
 
     ///////////异步回调/////////////
 
+    public static void execCallbackString(IWebview iWebview, String callbackId, String value, boolean b1, int status) {
+        execCallback(iWebview, callbackId, value, status, true, b1);
+    }
+
+    public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b, int status) {
+        execCallbackString(iWebview, callbackId, ajaxResult == null ? "{}" : ajaxResult.toString(), b, status);
+    }
+
+    public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, int status) {
+        execCallback(iWebview, callbackId, ajaxResult, false, status);
+    }
+
     public static void execCallbackOkData(IWebview iWebview, String callbackId, Object data) {
-        execCallbackOkData(iWebview, callbackId, data, false);
+        execCallbackOk(iWebview, callbackId, new AjaxResult(data), false);
     }
 
-    public static void execCallbackOkData(IWebview iWebview, String callbackId, Object data, boolean b) {
-        execCallback(iWebview, callbackId, JSUtils.toJsResponseText(new AjaxResult(data).toString()), JSUtil.OK, b);
-    }
-
-    public static void execCallbackOk(IWebview iWebview, String callbackId, String ajaxResult, boolean b) {
-        execCallbackOk(iWebview, callbackId, new AjaxResult(ajaxResult), b);
+    public static void execCallbackOk(IWebview iWebview, String callbackId, Collection value) {
+        execCallbackString(iWebview, callbackId, JsonUtil.toJson(value), false, JSUtil.OK);
     }
 
     public static void execCallbackOk(IWebview iWebview, String callbackId, AjaxResult ajaxResult) {
@@ -50,29 +62,11 @@ public class JSUtils extends JSUtil {
     }
 
     public static void execCallbackOk(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b) {
-        execCallback(iWebview, callbackId, JSUtils.toJsResponseText(ajaxResult.toString()), JSUtil.OK, b);
+        execCallback(iWebview, callbackId, ajaxResult, b, JSUtil.OK);
     }
 
-    ///////////异步错误回调/////////////
-
-    public static void execCallbackError(IWebview iWebview, String callbackId, String ajaxResult) {
-        execCallbackError(iWebview, callbackId, new AjaxResult(ajaxResult));
-    }
-
-    public static void execCallbackError(IWebview iWebview, String callbackId, String ajaxResult, boolean b) {
-        execCallbackError(iWebview, callbackId, new AjaxResult(ajaxResult), b);
-    }
-
-    public static void execCallbackError(IWebview iWebview, String callbackId, AjaxResult ajaxResult) {
-        execCallbackError(iWebview, callbackId, ajaxResult, false);
-    }
-
-    public static void execCallbackError(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b) {
-        execCallback(iWebview, callbackId, JSUtils.toJsResponseText(JsonUtil.toJson(ajaxResult)), JSUtil.ERROR, b);
-    }
-
-    public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b, int status) {
-        execCallback(iWebview, callbackId, JSUtils.toJsResponseText(JsonUtil.toJson(ajaxResult)), status, b);
+    public static void execCallbackErrorData(IWebview iWebview, String callbackId, Object data) {
+        execCallback(iWebview, callbackId, new AjaxResult(data), JSUtil.ERROR);
     }
 
     ////////////执行js函数/////////

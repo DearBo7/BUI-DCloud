@@ -52,7 +52,7 @@ public class AppUpdatePlugin extends StandardFeature {
                      */
                     @Override
                     public void onGranted() {
-                        JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(-1, "权限请求成功!"));
+                        JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(1, "权限请求成功!"));
                     }
 
                     /**
@@ -60,7 +60,7 @@ public class AppUpdatePlugin extends StandardFeature {
                      */
                     @Override
                     public void onDenied() {
-                        JSUtils.execCallbackError(iWebview, callbackId, new AjaxResult(-1, "权限请求失败!"), false);
+                        JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(-1, "权限请求失败!"));
                     }
                 }).request();
             }

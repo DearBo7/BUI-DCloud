@@ -6,9 +6,6 @@ import android.content.SharedPreferences;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.dcloud.common.DHInterface.IWebview;
 import io.dcloud.common.DHInterface.StandardFeature;
 import io.dcloud.common.util.JSUtil;
@@ -25,14 +22,11 @@ public class SharedPreferencesPlugin extends StandardFeature {
     public String keyExist(IWebview iWebview, JSONArray jsonArray) {
         String keyName = jsonArray.optString(0);
         if (StringUtils.isBlank(keyName)) {
-            return JSUtil.wrapJsVar(new AjaxResult(0, "key不能为空").toString());
+            return JSUtils.wrapJsVar(new AjaxResult(-1, "key不能为空"));
         }
         boolean containsFlag = getDPluginContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE).contains(keyName);
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("jsonArray", jsonArray);
-        returnMap.put("keyName", keyName);
-        returnMap.put("successFlag", containsFlag);
-        return JSUtil.wrapJsVar(new AjaxResult(returnMap).toString());
+
+        return JSUtils.wrapJsVar(containsFlag);
     }
 
     /**
@@ -44,7 +38,7 @@ public class SharedPreferencesPlugin extends StandardFeature {
         String keyName = jsonArray.optString(1);
         String keyValue = jsonArray.optString(2);
         if (StringUtils.isBlank(keyName)) {
-            JSUtils.execCallbackError(iWebview, callbackId, new AjaxResult(0, "保存的key不能为空!", jsonArray), false);
+            JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(-1, "保存的key不能为空!", jsonArray));
             return;
         }
         //获取SharedPreferences
@@ -54,29 +48,18 @@ public class SharedPreferencesPlugin extends StandardFeature {
         //存放数据
         editor.putString(keyName, keyValue);
         boolean commitFlag = editor.commit();
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("jsonArray", jsonArray);
-        returnMap.put("keyName", keyName);
-        returnMap.put("keyValue", keyValue);
-        returnMap.put("successFlag", commitFlag);
-        JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(returnMap), false);
+        JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(commitFlag));
     }
 
     public String getAppConfig(IWebview iWebview, JSONArray jsonArray) {
         //回调
         String keyName = jsonArray.optString(0);
         if (StringUtils.isBlank(keyName)) {
-            return JSUtil.wrapJsVar(new AjaxResult(0, "获取的key不能为空!").toString());
+            return JSUtils.wrapJsVar(new AjaxResult(0, "获取的key不能为空!"));
         }
         SharedPreferences sharedPreferences = getDPluginContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         String keyValue = sharedPreferences.getString(keyName, null);
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("jsonArray", jsonArray);
-        returnMap.put("keyName", keyName);
-        returnMap.put("keyValue", keyValue);
-        returnMap.put("successFlag", StringUtils.isNoneBlank(keyValue));
-
-        return JSUtil.wrapJsVar(new AjaxResult(returnMap).toString());
+        return JSUtils.wrapJsVar(new AjaxResult(keyValue));
     }
 
     public String deleteAppConfig(IWebview iWebview, JSONArray jsonArray) {
@@ -85,11 +68,7 @@ public class SharedPreferencesPlugin extends StandardFeature {
             return JSUtil.wrapJsVar(new AjaxResult(0, "删除的key不能为空!").toString());
         }
         boolean commitFlag = getDPluginContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE).edit().remove(keyName).commit();
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("jsonArray", jsonArray);
-        returnMap.put("keyName", keyName);
-        returnMap.put("successFlag", commitFlag);
-        return JSUtil.wrapJsVar(new AjaxResult(returnMap).toString());
+        return JSUtils.wrapJsVar(commitFlag);
     }
 
 }

@@ -83,7 +83,7 @@ public class BluePlugin extends StandardFeature {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             iWebview.getActivity().startActivityForResult(intent, REQUEST_CODE_OPEN);
         } else {
-            JSUtils.execCallbackOk(iWebview, callbackId, new AjaxResult(true), false);
+            JSUtils.execCallbackOkData(iWebview, callbackId, true);
         }
     }
 
