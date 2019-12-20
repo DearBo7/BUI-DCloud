@@ -74,4 +74,22 @@ public class JSUtils extends JSUtil {
     public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b, int status) {
         execCallback(iWebview, callbackId, JSUtils.toJsResponseText(JsonUtil.toJson(ajaxResult)), status, b);
     }
+
+    ////////////执行js函数/////////
+
+    public static void evalJsFun(IWebview iWebview, String callbackFunName, AjaxResult result) {
+        evalJsFun(iWebview, callbackFunName, result, false);
+    }
+
+    public static void evalJsFun(IWebview iWebview, String callbackFunName, AjaxResult result, boolean stringFlag) {
+        evalJsFun(iWebview, callbackFunName, JsonUtil.toJson(result), stringFlag);
+    }
+
+    public static void evalJsFun(IWebview iWebview, String callbackFunName, String result, boolean stringFlag) {
+        if (stringFlag) {
+            iWebview.evalJS("javascript:" + callbackFunName + "('" + result + "')");
+        } else {
+            iWebview.evalJS("javascript:" + callbackFunName + "(" + result + ")");
+        }
+    }
 }
