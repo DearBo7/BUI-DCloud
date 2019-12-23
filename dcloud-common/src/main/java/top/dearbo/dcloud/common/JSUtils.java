@@ -31,18 +31,35 @@ public class JSUtils extends JSUtil {
         return wrapJsVarString(String.valueOf(value));
     }
 
+    /**
+     * 参数说明：
+     *
+     * @param value 要返回到JS层的值
+     *              isString：返回值类型是否为原始字符串,默认[false]
+     * @return 值
+     */
     public static String wrapJsVarString(String value) {
         return wrapJsVar(value, false);
     }
 
     ///////////异步回调/////////////
 
-    public static void execCallbackString(IWebview iWebview, String callbackId, String value, boolean b1, int status) {
-        execCallback(iWebview, callbackId, value, status, true, b1);
+    /**
+     * 参数说明:
+     *
+     * @param iWebview      扩展插件方法运行的窗口
+     * @param callbackId    回调函数的唯一标识
+     * @param value         回调函数的参数
+     * @param pKeepCallback 是否可多次触发回调函数
+     * @param status        操作是否成功，成功则使用JSUtil.OK，否则使用错误代码
+     * @param isJson        回调函数参数是否为JSON数据
+     */
+    public static void execCallbackString(IWebview iWebview, String callbackId, String value, boolean pKeepCallback, int status, boolean isJson) {
+        execCallback(iWebview, callbackId, value, status, isJson, pKeepCallback);
     }
 
-    public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b, int status) {
-        execCallbackString(iWebview, callbackId, ajaxResult == null ? "{}" : ajaxResult.toString(), b, status);
+    public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean pKeepCallback, int status) {
+        execCallbackString(iWebview, callbackId, ajaxResult == null ? "{}" : ajaxResult.toString(), pKeepCallback, status, true);
     }
 
     public static void execCallback(IWebview iWebview, String callbackId, AjaxResult ajaxResult, int status) {
@@ -54,15 +71,15 @@ public class JSUtils extends JSUtil {
     }
 
     public static void execCallbackOk(IWebview iWebview, String callbackId, Collection value) {
-        execCallbackString(iWebview, callbackId, JsonUtil.toJson(value), false, JSUtil.OK);
+        execCallbackString(iWebview, callbackId, JsonUtil.toJson(value), false, JSUtil.OK, true);
     }
 
     public static void execCallbackOk(IWebview iWebview, String callbackId, AjaxResult ajaxResult) {
         execCallbackOk(iWebview, callbackId, ajaxResult, false);
     }
 
-    public static void execCallbackOk(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean b) {
-        execCallback(iWebview, callbackId, ajaxResult, b, JSUtil.OK);
+    public static void execCallbackOk(IWebview iWebview, String callbackId, AjaxResult ajaxResult, boolean pKeepCallback) {
+        execCallback(iWebview, callbackId, ajaxResult, pKeepCallback, JSUtil.OK);
     }
 
     public static void execCallbackErrorData(IWebview iWebview, String callbackId, Object data) {
@@ -75,12 +92,12 @@ public class JSUtils extends JSUtil {
         evalJsFun(iWebview, callbackFunName, result, false);
     }
 
-    public static void evalJsFun(IWebview iWebview, String callbackFunName, AjaxResult result, boolean stringFlag) {
-        evalJsFun(iWebview, callbackFunName, JsonUtil.toJson(result), stringFlag);
+    public static void evalJsFun(IWebview iWebview, String callbackFunName, AjaxResult result, boolean isString) {
+        evalJsFun(iWebview, callbackFunName, JsonUtil.toJson(result), isString);
     }
 
-    public static void evalJsFun(IWebview iWebview, String callbackFunName, String result, boolean stringFlag) {
-        if (stringFlag) {
+    public static void evalJsFun(IWebview iWebview, String callbackFunName, String result, boolean isString) {
+        if (isString) {
             iWebview.evalJS("javascript:" + callbackFunName + "('" + result + "')");
         } else {
             iWebview.evalJS("javascript:" + callbackFunName + "(" + result + ")");
